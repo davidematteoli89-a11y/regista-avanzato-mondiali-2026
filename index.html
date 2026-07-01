@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home — Regista Avanzato Mondiali 2026</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="index.html">🏆 <span>Regista Avanzato</span> — Mondiali 2026</a>
+    <nav class="main-nav"><a href="index.html" class="active">Home</a><a href="pages/player-rating-totale.html">Player Rating</a><a href="pages/power-ranking-48-squadre.html">Power Ranking</a><a href="pages/confronto-confederazioni.html">Confederazioni</a><a href="squadre/index.html">Squadre</a><a href="charts.html">Grafici</a></nav>
+  </div>
+</header>
+<main class="container">
+
+<div class="hero">
+  <div class="badge">Mondiali 2026 · Fase a gironi completata (72/72 partite, 12/12 gironi)</div>
+  <h1>Magazine Regista Avanzato</h1>
+  <p>Tutte le analisi del torneo in un unico posto: Player Rating, MVP, confronto tra confederazioni,
+  record del torneo, andamento xG, sorprese/delusioni, power ranking delle 48 squadre, classifiche,
+  Top 11, analisi tattiche, previsioni e le pagine di ogni nazionale — basate esclusivamente sui dati
+  PMSR ufficiali FIFA.</p>
+</div>
+
+<div class="grid-3" id="homeStats"></div>
+
+<div class="grid-2">
+  <div class="chart-card">
+    <h2 style="margin-top:0">Gol per ruolo — Fase a gironi</h2>
+    <canvas id="homeGoalsRole" height="220"></canvas>
+  </div>
+  <div class="chart-card">
+    <h2 style="margin-top:0">Indice medio per confederazione</h2>
+    <canvas id="homeConfed" height="220"></canvas>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="card"><span class="tag">MVP Giornata 1</span>
+    <a class="card-title" href="pages/mvp-giornata1.html">Kai Havertz — voto 8.9</a>
+    <p>Germania, 2 gol, 4 tiri</p></div>
+  <div class="card"><span class="tag">Power Ranking #1</span>
+    <a class="card-title" href="pages/power-ranking-48-squadre.html">Argentina</a>
+    <p>Indice 42.17 su 48 squadre</p></div>
+  <div class="card"><span class="tag">Gol più veloce</span>
+    <a class="card-title" href="pages/record-torneo.html">1' — Leroy Sané</a>
+    <p>Germania, in Ecuador 2-1 Germania</p></div>
+  <div class="card"><span class="tag">Interattivo</span>
+    <a class="card-title" href="charts.html">Grafici Comparativi</a>
+    <p>Radar e bar chart tra squadre e per partita</p></div>
+</div>
+
+<div class="section-title-row"><h2>Tutte le analisi</h2></div>
+<div class="grid"><div class="card"><a class="card-title" href="pages/player-rating-giornata1.html">Player Rating — Giornata 1</a><p>Voto 1-10 per ogni giocatore, metodologia trasparente basata su xG, tiri, duelli e passaggi chiave.</p></div><div class="card"><a class="card-title" href="pages/metodologia-player-rating.html">Metodologia Player Rating</a><p>Come viene calcolato il voto: pilastri, pesi per ruolo, formula portieri, limiti dichiarati.</p></div><div class="card"><a class="card-title" href="pages/mvp-giornata1.html">MVP della Giornata 1</a><p>Il singolo miglior giocatore della giornata, con motivazione da match analyst.</p></div><div class="card"><a class="card-title" href="pages/confronto-confederazioni.html">Confronto per Confederazione</a><p>UEFA, CONMEBOL, CAF, AFC, CONCACAF, OFC a confronto sui dati reali raccolti.</p></div><div class="card"><a class="card-title" href="pages/record-torneo.html">Record del Torneo</a><p>Gol più veloce, partita con più tiri, xG più alto/basso, possesso estremo — aggiornati giornata su giornata.</p></div><div class="card"><a class="card-title" href="pages/andamento-xg-giornata1.html">Andamento xG — Giornata 1</a><p>Chi sovra/sottoperforma il proprio xG cumulato, squadra per squadra, dopo la Giornata 1.</p></div><div class="card"><a class="card-title" href="pages/andamento-xg-giornata2.html">Andamento xG — Giornata 2</a><p>Confronto gol reali vs xG cumulato per tutte le 48 squadre dopo 2 giornate.</p></div><div class="card"><a class="card-title" href="pages/andamento-xg-giornata3.html">Andamento xG — Giornata 3</a><p>Andamento xG al termine della fase a gironi: chi ha segnato sopra/sotto le attese.</p></div><div class="card"><a class="card-title" href="pages/andamento-xg-totale.html">Andamento xG — Totale Gironi</a><p>Riepilogo finale Expected vs Reale sull'intera fase a gironi (72 partite, 48 squadre).</p></div><div class="card"><a class="card-title" href="pages/sorprese-delusioni-giornata1.html">Sorprese e Delusioni</a><p>Squadre e giocatori che hanno performato molto sopra o sotto le aspettative rispetto all'xG.</p></div><div class="card"><a class="card-title" href="pages/power-ranking-48-squadre.html">Power Ranking — 48 Squadre</a><p>Classifica generale di tutte le nazionali, trasversale ai gironi, basata su xG, possesso e rendimento reale.</p></div><div class="card"><a class="card-title" href="pages/verifica-previsioni-giornata2.html">Verifica Previsioni Giornata 2</a><p>Confronto tra le previsioni fatte e i risultati reali (in attesa dei dati di Giornata 2).</p></div><div class="card"><a class="card-title" href="pages/top11-giornata1.html">Top 11 della Giornata 1</a><p>La migliore formazione della giornata, ruolo per ruolo.</p></div><div class="card"><a class="card-title" href="pages/classifiche-statistiche-giornata1.html">Classifiche Statistiche — Giornata 1</a><p>Classifiche per ogni statistica, squadra per squadra e giocatore per giocatore.</p></div><div class="card"><a class="card-title" href="pages/previsioni-giornata2.html">Previsioni Giornata 2</a><p>Pronostici per ogni partita della Giornata 2.</p></div><div class="card"><a class="card-title" href="pages/analisi-tattica-giornata1.html">Analisi Tattica — Giornata 1</a><p>5 chiavi tattiche, forza, debolezza, piazzati e lettura da match analyst per ogni squadra, basati sui PMSR della Giornata 1.</p></div><div class="card"><a class="card-title" href="pages/analisi-tattica-giornata2.html">Analisi Tattica — Giornata 2</a><p>Stessa analisi approfondita per le 24 partite della Giornata 2.</p></div><div class="card"><a class="card-title" href="pages/analisi-tattica-giornata3.html">Analisi Tattica — Giornata 3</a><p>Analisi tattica delle 24 partite della Giornata 3 (ultima di fase a gironi).</p></div><div class="card"><a class="card-title" href="pages/analisi-tattica-totale.html">Analisi Tattica — Totale Gironi</a><p>Un blocco per squadra: analisi aggregata delle 3 partite della fase a gironi per ciascuna delle 48 nazionali.</p></div><div class="card"><a class="card-title" href="pages/5-statistiche-giornata1.html">5 Statistiche — Giornata 1</a><p>Risultato, gol vs xG, passaggi, top offensivo e top difensivo per ogni squadra nelle 24 partite della Giornata 1.</p></div><div class="card"><a class="card-title" href="pages/5-statistiche-giornata2.html">5 Statistiche — Giornata 2</a><p>Le stesse 5 statistiche per le 24 partite della Giornata 2.</p></div><div class="card"><a class="card-title" href="pages/5-statistiche-giornata3.html">5 Statistiche — Giornata 3</a><p>Le stesse 5 statistiche per le 24 partite della Giornata 3.</p></div><div class="card"><a class="card-title" href="pages/5-statistiche-totale.html">5 Statistiche — Totale Gironi</a><p>Riepilogo cumulativo delle 5 statistiche per ciascuna delle 48 nazionali sull'intera fase a gironi.</p></div><div class="card"><a class="card-title" href="pages/statistiche-curiose-e-fondamentali.html">Statistiche Curiose e Fondamentali</a><p>50 statistiche curiose e fondamentali del torneo, spiegate.</p></div><div class="card"><a class="card-title" href="pages/classifica-gironi.html">Classifica Gironi</a><p>Classifica aggiornata di tutti i 12 gironi.</p></div><div class="card"><a class="card-title" href="pages/player-rating-giornata2.html">Player Rating — Giornata 2</a><p>Voto 1-10 per tutti i 759 giocatori delle 24 partite della Giornata 2.</p></div><div class="card"><a class="card-title" href="pages/mvp-giornata2.html">MVP della Giornata 2</a><p>Cody Gakpo (Olanda), doppietta nel 5-1 alla Svezia — il migliore del turno.</p></div><div class="card"><a class="card-title" href="pages/top11-giornata2.html">Top 11 della Giornata 2</a><p>La migliore formazione delle 24 partite del turno, ruolo per ruolo.</p></div><div class="card"><a class="card-title" href="pages/sorprese-delusioni-giornata2.html">Sorprese e Delusioni — Giornata 2</a><p>Il successo della Norvegia sul Senegal nonostante l'xG più basso, e le altre sorprese delle 24 partite del turno.</p></div><div class="card"><a class="card-title" href="pages/player-rating-giornata3.html">Player Rating — Giornata 3</a><p>Voto 1-10 per tutti i 759 giocatori delle 24 partite della Giornata 3.</p></div><div class="card"><a class="card-title" href="pages/mvp-giornata3.html">MVP della Giornata 3</a><p>Riyad Mahrez (Algeria), doppietta nel 3-3 con l'Austria — il migliore del turno.</p></div><div class="card"><a class="card-title" href="pages/top11-giornata3.html">Top 11 della Giornata 3</a><p>La migliore formazione delle 24 partite del turno, ruolo per ruolo.</p></div><div class="card"><a class="card-title" href="pages/top11-gironi-totale.html">Top 11 — Totale Fase a Gironi</a><p>La migliore formazione dell'intera fase a gironi (M1-M72), basata sul rendimento cumulativo sulle 3 giornate.</p></div><div class="card"><a class="card-title" href="pages/classifica-gironi-xpoints.html">Classifica Gironi — xPoints</a><p>Come doveva andare in base ai numeri: classifica ricostruita con il modello Poisson sugli xG reali di ogni partita.</p></div><div class="card"><a class="card-title" href="pages/sorprese-delusioni-giornata3.html">Sorprese e Delusioni — Giornata 3</a><p>La vittoria della Bosnia-Erzegovina sul Qatar nonostante l'xG più basso, una delle 4 sorprese vere del turno — il più alto numero della fase a gironi.</p></div><div class="card"><a class="card-title" href="pages/player-rating-totale.html">Player Rating Totale — Fase a Gironi</a><p>Il rendimento cumulativo di tutti i 999 giocatori delle 72 partite della fase a gironi, giornata su giornata e nel complesso.</p></div></div>
+
+<div class="section-title-row"><h2>Squadre</h2></div>
+<p><a href="squadre/index.html">Vai alle pagine delle 48 nazionali &rarr;</a> (rosa, statistiche, storico Mondiali, classifiche di nazionale)</p>
+
+</main>
+<footer>
+  <div class="container">Magazine generato dal progetto Regista Avanzato — tutti i dati provengono esclusivamente dai PDF PMSR ufficiali FIFA scaricati e dai file di anagrafica/ruolo FBref (statistiche_convocati.md), usati solo per nomi e ruoli.</div>
+</footer>
+
+<script src="assets/data.js"></script>
+<script src="assets/chart.umd.js"></script>
+<script>
+const PALETTE = ['#3ddc84', '#ffb238', '#5b9dff', '#ff5d6c', '#b97cff', '#3ddcd2'];
+Chart.defaults.color = '#9aa1ac';
+Chart.defaults.borderColor = '#2a2e38';
+
+(function(){
+  const data = window.SITE_DATA;
+  const teams = data.teams, matches = data.matches, players = data.players || [];
+
+  const totalGoals = matches.reduce((s,m) => s + m.teams.reduce((s2,t) => s2 + t.goals, 0), 0);
+  const topScorer = [...players].sort((a,b) => b.goals - a.goals)[0];
+
+  document.getElementById('homeStats').innerHTML = `
+    <div class="stat-card"><span class="kpi-value accent">${matches.length}</span><span class="kpi-label">Partite giocate</span></div>
+    <div class="stat-card"><span class="kpi-value accent">${totalGoals}</span><span class="kpi-label">Gol totali (fase a gironi)</span></div>
+    <div class="stat-card"><span class="kpi-value accent">${teams.length}</span><span class="kpi-label">Squadre · ${[...new Set(teams.map(t=>t.confed))].length} confederazioni</span></div>
+  `;
+
+  const roleLabels = {GK:'Portieri', DF:'Difensori', MF:'Centrocampisti', FW:'Attaccanti'};
+  const roleOrder = ['GK','DF','MF','FW'];
+  const goalsByRole = {GK:0, DF:0, MF:0, FW:0};
+  players.forEach(p => { goalsByRole[p.role] = (goalsByRole[p.role] || 0) + (p.goals || 0); });
+  new Chart(document.getElementById('homeGoalsRole'), {
+    type: 'doughnut',
+    data: { labels: roleOrder.map(r => roleLabels[r]),
+      datasets: [{ data: roleOrder.map(r => goalsByRole[r]), backgroundColor: PALETTE, borderColor: '#171a21', borderWidth: 2 }] },
+    options: { plugins:{ legend:{position:'bottom', labels:{color:'#e8eaed'}} } }
+  });
+
+  const confeds = [...new Set(teams.map(t => t.confed))].sort();
+  const confedAvg = confeds.map(c => {
+    const list = teams.filter(t => t.confed === c);
+    return +(list.reduce((s,t) => s + t.composite, 0) / list.length).toFixed(2);
+  });
+  new Chart(document.getElementById('homeConfed'), {
+    type: 'bar',
+    data: { labels: confeds, datasets: [{ label:'Indice medio', data: confedAvg, backgroundColor: PALETTE }] },
+    options: { scales: { y:{ grid:{color:'#2a2e38'} }, x:{grid:{display:false}} }, plugins:{ legend:{display:false} } }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Le 48 Squadre — Regista Avanzato Mondiali 2026</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="../index.html">🏆 <span>Regista Avanzato</span> — Mondiali 2026</a>
+    <nav class="main-nav"><a href="../index.html">Home</a><a href="../pages/player-rating-totale.html">Player Rating</a><a href="../pages/power-ranking-48-squadre.html">Power Ranking</a><a href="../pages/confronto-confederazioni.html">Confederazioni</a><a href="../squadre/index.html" class="active">Squadre</a><a href="../charts.html">Grafici</a></nav>
+  </div>
+</header>
+<main class="container">
+<a class="back-link" href="../index.html">&larr; Home</a>
+<div class="hero">
+<span class="badge">Dati PMSR ufficiali — Giornata 1</span>
+<h1>Le 48 Squadre</h1>
+<p>Pagina di ogni nazionale: rosa convocati, statistiche generali, classifiche di nazionale, storico Mondiali e statistiche del Mondiale 2026 in corso. Filtra per girone, confederazione o cerca una squadra.</p>
+</div>
+
+<div class="grid-3" id="statCards"></div>
+
+<div class="controls">
+  <label>Cerca squadra <input type="text" id="fSearch" placeholder="es. Germania, Brasile..."></label>
+  <label>Girone <select id="fGirone"><option value="">Tutti</option></select></label>
+  <label>Confederazione <select id="fConfed"><option value="">Tutte</option></select></label>
+  <label>Ordina per <select id="fSort">
+    <option value="rank">Power Ranking</option>
+    <option value="name">Nome (A-Z)</option>
+    <option value="girone">Girone</option>
+  </select></label>
+  <button id="fReset">Azzera filtri</button>
+</div>
+
+<p id="resultCount" style="color:var(--text-dim);font-size:.85rem;margin-top:-6px"></p>
+<div id="teamsContainer"></div>
+
+</main>
+<footer>
+  <div class="container">Magazine generato dal progetto Regista Avanzato — tutti i dati provengono esclusivamente dai PDF PMSR ufficiali FIFA scaricati e dai file di anagrafica/ruolo FBref (statistiche_convocati.md), usati solo per nomi e ruoli.</div>
+</footer>
+
+<script src="../assets/data.js"></script>
+<script>
+(function(){
+  const data = window.SITE_DATA;
+  const teams = data.teams;
+
+  const gironi = [...new Set(teams.map(t => t.girone))].sort();
+  const confeds = [...new Set(teams.map(t => t.confed))].sort();
+  const fGirone = document.getElementById('fGirone');
+  const fConfed = document.getElementById('fConfed');
+  gironi.forEach(g => { const o = document.createElement('option'); o.value = g; o.textContent = 'Girone ' + g; fGirone.appendChild(o); });
+  confeds.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; fConfed.appendChild(o); });
+
+  document.getElementById('statCards').innerHTML = `
+    <div class="stat-card"><span class="kpi-value accent">${teams.length}</span><span class="kpi-label">Squadre totali</span></div>
+    <div class="stat-card"><span class="kpi-value accent">${gironi.length}</span><span class="kpi-label">Gironi</span></div>
+    <div class="stat-card"><span class="kpi-value accent">${confeds.length}</span><span class="kpi-label">Confederazioni</span></div>
+  `;
+
+  const fSearch = document.getElementById('fSearch');
+  const fSort = document.getElementById('fSort');
+  const container = document.getElementById('teamsContainer');
+  const resultCount = document.getElementById('resultCount');
+
+  function render(){
+    const q = fSearch.value.trim().toLowerCase();
+    const g = fGirone.value;
+    const c = fConfed.value;
+    let filtered = teams.filter(t =>
+      (!q || t.team.toLowerCase().includes(q)) &&
+      (!g || t.girone === g) &&
+      (!c || t.confed === c)
+    );
+    resultCount.textContent = filtered.length + ' / ' + teams.length + ' squadre';
+
+    if(fSort.value === 'name'){
+      filtered = [...filtered].sort((a,b) => a.team.localeCompare(b.team));
+      container.innerHTML = '<div class="grid">' + filtered.map(cardHtml).join('') + '</div>';
+      return;
+    }
+    if(fSort.value === 'rank'){
+      filtered = [...filtered].sort((a,b) => a.rank - b.rank);
+      container.innerHTML = '<div class="grid">' + filtered.map(cardHtml).join('') + '</div>';
+      return;
+    }
+    // group by girone
+    const byGirone = {};
+    filtered.forEach(t => { (byGirone[t.girone] = byGirone[t.girone] || []).push(t); });
+    const order = Object.keys(byGirone).sort();
+    container.innerHTML = order.map(g => {
+      const list = byGirone[g].sort((a,b) => a.rank - b.rank);
+      return '<h2>Girone ' + g + '</h2><div class="grid">' + list.map(cardHtml).join('') + '</div>';
+    }).join('');
+  }
+
+  function cardHtml(t){
+    return '<div class="card"><span class="tag">PR #' + t.rank + '</span>' +
+      '<a class="card-title" href="' + t.slug + '.html">' + t.team + '</a>' +
+      '<p>' + t.confed + ' · Girone ' + t.girone + '</p></div>';
+  }
+
+  [fSearch].forEach(el => el.addEventListener('input', render));
+  [fGirone, fConfed, fSort].forEach(el => el.addEventListener('change', render));
+  document.getElementById('fReset').addEventListener('click', () => {
+    fSearch.value = ''; fGirone.value = ''; fConfed.value = ''; fSort.value = 'rank'; render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

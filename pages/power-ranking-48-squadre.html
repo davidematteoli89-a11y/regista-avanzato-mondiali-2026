@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Power Ranking — 48 Squadre — Regista Avanzato Mondiali 2026</title>
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="../index.html">🏆 <span>Regista Avanzato</span> — Mondiali 2026</a>
+    <nav class="main-nav"><a href="../index.html">Home</a><a href="../pages/player-rating-totale.html">Player Rating</a><a href="../pages/power-ranking-48-squadre.html" class="active">Power Ranking</a><a href="../pages/confronto-confederazioni.html">Confederazioni</a><a href="../squadre/index.html">Squadre</a><a href="../charts.html">Grafici</a></nav>
+  </div>
+</header>
+<main class="container">
+<a class="back-link" href="../index.html">&larr; Home</a>
+<div class="hero">
+<span class="badge">Dati PMSR ufficiali — fase a gironi conclusa</span>
+<h2 style="border:none;margin-top:0">Power Ranking — 48 Squadre (fase a gironi conclusa)</h2>
+<p>Classifica generale di tutte le 48 nazionali (trasversale ai gironi), basata su punti, differenza reti, differenza xG, possesso medio e tiri medi — tutti dati PMSR reali. Formula: <code>punti×3 + diff.reti×1.0 + diff.xG×1.5 + (possesso−50)×0.05 + tiri medi×0.1</code>. Tutte le 48 squadre hanno ora giocato 3 partite (fase a gironi conclusa in tutti i 12 gironi). Indicatore in evoluzione: verrà aggiornato a partire dagli ottavi di finale.</p>
+</div>
+
+<div class="grid-3" id="statCards"></div>
+
+<div class="controls">
+  <label>Cerca squadra <input type="text" id="fSearch" placeholder="es. Germania, Brasile..."></label>
+  <label>Girone <select id="fGirone"><option value="">Tutti</option></select></label>
+  <label>Confederazione <select id="fConfed"><option value="">Tutte</option></select></label>
+  <button id="fReset">Azzera filtri</button>
+</div>
+<p id="resultCount" style="color:var(--text-dim);font-size:.85rem;margin-top:-6px"></p>
+
+<div class="table-wrap">
+<table id="rankTable">
+<thead><tr>
+  <th data-k="rank">#</th>
+  <th data-k="team">Squadra</th>
+  <th data-k="girone">Girone</th>
+  <th data-k="confed">Confederazione</th>
+  <th data-k="punti">Punti</th>
+  <th data-k="diff_reti">Diff. reti</th>
+  <th data-k="xg_diff">Diff. xG</th>
+  <th data-k="possesso">Possesso medio</th>
+  <th data-k="tiri">Tiri medi</th>
+  <th data-k="composite">Indice</th>
+</tr></thead>
+<tbody id="rankBody"></tbody>
+</table>
+</div>
+
+</main>
+<footer>
+  <div class="container">Magazine generato dal progetto Regista Avanzato — tutti i dati provengono esclusivamente dai PDF PMSR ufficiali FIFA scaricati e dai file di anagrafica/ruolo FBref (statistiche_convocati.md), usati solo per nomi e ruoli.</div>
+</footer>
+
+<script src="../assets/data.js"></script>
+<script>
+(function(){
+  const data = window.SITE_DATA;
+  const teams = data.teams;
+  const gironi = [...new Set(teams.map(t => t.girone))].sort();
+  const confeds = [...new Set(teams.map(t => t.confed))].sort();
+  const fGirone = document.getElementById('fGirone');
+  const fConfed = document.getElementById('fConfed');
+  gironi.forEach(g => { const o = document.createElement('option'); o.value = g; o.textContent = 'Girone ' + g; fGirone.appendChild(o); });
+  confeds.forEach(c => { const o = document.createElement('option'); o.value = c; o.textContent = c; fConfed.appendChild(o); });
+
+  const best = teams.reduce((a,b) => a.composite > b.composite ? a : b);
+  const worst = teams.reduce((a,b) => a.composite < b.composite ? a : b);
+  document.getElementById('statCards').innerHTML = `
+    <div class="stat-card"><span class="kpi-value accent">${best.team}</span><span class="kpi-label">Indice più alto (${best.composite.toFixed(2)})</span></div>
+    <div class="stat-card"><span class="kpi-value">${teams.length}</span><span class="kpi-label">Squadre classificate</span></div>
+    <div class="stat-card"><span class="kpi-value" style="color:var(--danger)">${worst.team}</span><span class="kpi-label">Indice più basso (${worst.composite.toFixed(2)})</span></div>
+  `;
+
+  const fSearch = document.getElementById('fSearch');
+  const tbody = document.getElementById('rankBody');
+  const resultCount = document.getElementById('resultCount');
+  let sortKey = 'composite', sortDir = -1;
+
+  function fmtSigned(v, dec){ const s = v.toFixed(dec); return (v > 0 ? '+' : '') + s; }
+
+  function render(){
+    const q = fSearch.value.trim().toLowerCase();
+    const g = fGirone.value;
+    const c = fConfed.value;
+    let filtered = teams.filter(t =>
+      (!q || t.team.toLowerCase().includes(q)) &&
+      (!g || t.girone === g) &&
+      (!c || t.confed === c)
+    );
+    resultCount.textContent = filtered.length + ' / ' + teams.length + ' squadre';
+    const isText = sortKey === 'team' || sortKey === 'girone' || sortKey === 'confed';
+    filtered = [...filtered].sort((a,b) => {
+      const cmp = isText ? a[sortKey].localeCompare(b[sortKey]) : (a[sortKey] - b[sortKey]);
+      return cmp * sortDir;
+    });
+
+    tbody.innerHTML = filtered.map((t, i) => {
+      const compClass = t.composite >= 10 ? 'voto-hi' : (t.composite < 0 ? 'voto-lo' : '');
+      return '<tr><td>' + (i+1) + '</td><td>' + t.team + '</td><td>' + t.girone + '</td><td>' + t.confed +
+        '</td><td>' + t.punti + '</td><td>' + fmtSigned(t.diff_reti, 0) + '</td><td>' + fmtSigned(t.xg_diff, 2) +
+        '</td><td>' + t.possesso.toFixed(1).replace('.', ',') + '%</td><td>' + t.tiri.toFixed(1).replace('.', ',') +
+        '</td><td class="' + compClass + '">' + t.composite.toFixed(2).replace('.', ',') + '</td></tr>';
+    }).join('');
+  }
+
+  document.querySelectorAll('#rankTable thead th').forEach(th => {
+    th.addEventListener('click', () => {
+      const k = th.dataset.k;
+      if(sortKey === k) sortDir *= -1; else { sortKey = k; sortDir = (k === 'team' || k === 'girone' || k === 'confed') ? 1 : -1; }
+      render();
+    });
+  });
+
+  [fSearch].forEach(el => el.addEventListener('input', render));
+  [fGirone, fConfed].forEach(el => el.addEventListener('change', render));
+  document.getElementById('fReset').addEventListener('click', () => {
+    fSearch.value = ''; fGirone.value = ''; fConfed.value = ''; sortKey = 'composite'; sortDir = -1; render();
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

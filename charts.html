@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grafici Comparativi — Regista Avanzato Mondiali 2026</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="container">
+    <a class="logo" href="index.html">🏆 <span>Regista Avanzato</span> — Mondiali 2026</a>
+    <nav class="main-nav"><a href="index.html">Home</a><a href="pages/player-rating-totale.html">Player Rating</a><a href="pages/power-ranking-48-squadre.html">Power Ranking</a><a href="pages/confronto-confederazioni.html">Confederazioni</a><a href="squadre/index.html">Squadre</a><a href="charts.html" class="active">Grafici</a></nav>
+  </div>
+</header>
+<main class="container">
+
+<a class="back-link" href="index.html">&larr; Home</a>
+<h1>Grafici Comparativi — Giornata 1</h1>
+<p>Confronto interattivo tra squadre e tra le due squadre di una stessa partita, su possesso, tiri, xG, % passaggi e duelli vinti. Tutti i valori sono presi dai dati PMSR ufficiali (team_flat.json / inpossession.json / outpossession.json).</p>
+
+<div class="chart-card">
+  <h2 style="margin-top:0">Confronto Radar tra 2 squadre</h2>
+  <div class="controls">
+    <label>Squadra A <select id="teamA"></select></label>
+    <label>Squadra B <select id="teamB"></select></label>
+  </div>
+  <canvas id="radarChart" height="320"></canvas>
+</div>
+
+<div class="chart-card">
+  <h2 style="margin-top:0">Confronto diretto per partita</h2>
+  <div class="controls">
+    <label>Partita <select id="matchSelect"></select></label>
+  </div>
+  <canvas id="matchBarChart" height="280"></canvas>
+</div>
+
+<div class="chart-card">
+  <h2 style="margin-top:0">Power Ranking — Indice composito (Top 15)</h2>
+  <canvas id="powerBarChart" height="320"></canvas>
+</div>
+
+<div class="grid-2">
+  <div class="chart-card">
+    <h2 style="margin-top:0">Gol per ruolo</h2>
+    <canvas id="goalsRoleChart" height="260"></canvas>
+  </div>
+  <div class="chart-card">
+    <h2 style="margin-top:0">Voto medio per ruolo</h2>
+    <canvas id="votoRoleChart" height="260"></canvas>
+  </div>
+</div>
+
+<div class="chart-card">
+  <h2 style="margin-top:0">Top 10 marcatori — Giornata 1</h2>
+  <canvas id="topScorersChart" height="300"></canvas>
+</div>
+
+<div class="chart-card">
+  <h2 style="margin-top:0">Confronto Confederazioni — Indice medio</h2>
+  <canvas id="confedChart" height="280"></canvas>
+</div>
+
+<script src="assets/data.js"></script>
+<script src="assets/chart.umd.js"></script>
+<script>
+const PALETTE = ['#3ddc84', '#ffb238', '#5b9dff', '#ff5d6c', '#b97cff', '#3ddcd2'];
+Chart.defaults.color = '#9aa1ac';
+Chart.defaults.borderColor = '#2a2e38';
+
+(function(){
+  const data = window.SITE_DATA;
+  const teams = data.teams;
+  const matches = data.matches;
+  const players = data.players || [];
+  const teamSelA = document.getElementById('teamA');
+  const teamSelB = document.getElementById('teamB');
+  teams.forEach(t => {
+    const o1 = document.createElement('option'); o1.value = t.team; o1.textContent = t.team;
+    const o2 = o1.cloneNode(true);
+    teamSelA.appendChild(o1); teamSelB.appendChild(o2);
+  });
+  teamSelA.value = teams[0] ? teams[0].team : '';
+  teamSelB.value = teams[1] ? teams[1].team : '';
+
+  const radarMetrics = [
+    {k:'possesso', label:'Possesso %', max:80},
+    {k:'tiri', label:'Tiri medi', max:25},
+    {k:'xg', label:'xG', max:4.5},
+    {k:'xg_diff', label:'Diff. xG', max:4, min:-4},
+    {k:'duelli_vinti', label:'Duelli vinti', max:80},
+  ];
+  function teamByName(name){ return teams.find(t => t.team === name); }
+  function normVal(t, m){
+    let v = t[m.k] ?? 0;
+    const min = m.min ?? 0;
+    return ((v - min) / (m.max - min)) * 100;
+  }
+  let radarChart;
+  function renderRadar(){
+    const tA = teamByName(teamSelA.value), tB = teamByName(teamSelB.value);
+    if(!tA || !tB) return;
+    const labels = radarMetrics.map(m => m.label);
+    const dataA = radarMetrics.map(m => Math.round(normVal(tA, m)));
+    const dataB = radarMetrics.map(m => Math.round(normVal(tB, m)));
+    if(radarChart) radarChart.destroy();
+    radarChart = new Chart(document.getElementById('radarChart'), {
+      type: 'radar',
+      data: { labels, datasets: [
+        {label: tA.team, data: dataA, borderColor: PALETTE[0], backgroundColor: PALETTE[0]+'33'},
+        {label: tB.team, data: dataB, borderColor: PALETTE[2], backgroundColor: PALETTE[2]+'33'},
+      ]},
+      options: { scales: { r: { min:0, max:100, ticks:{display:false}, grid:{color:'#2a2e38'} } },
+        plugins:{ legend:{labels:{color:'#e8eaed'}} } }
+    });
+  }
+  teamSelA.addEventListener('change', renderRadar);
+  teamSelB.addEventListener('change', renderRadar);
+  renderRadar();
+
+  const matchSel = document.getElementById('matchSelect');
+  matches.forEach(m => {
+    const o = document.createElement('option'); o.value = m.match_id;
+    o.textContent = m.desc + ' (' + m.date + ')';
+    matchSel.appendChild(o);
+  });
+  let matchChart;
+  function renderMatch(){
+    const m = matches.find(x => x.match_id === matchSel.value) || matches[0];
+    if(!m) return;
+    const labels = ['Possesso %','xG','Tiri totali','Tiri in porta','% Passaggi','Cross','Distanza km'];
+    const t1 = m.teams[0], t2 = m.teams[1];
+    const d1 = [t1.possession, t1.xg, t1.attempts_total, t1.attempts_on, t1.pass_pct, t1.crosses, t1.distance_km];
+    const d2 = [t2.possession, t2.xg, t2.attempts_total, t2.attempts_on, t2.pass_pct, t2.crosses, t2.distance_km];
+    if(matchChart) matchChart.destroy();
+    matchChart = new Chart(document.getElementById('matchBarChart'), {
+      type: 'bar',
+      data: { labels, datasets: [
+        {label: t1.team + ' (' + t1.goals + ')', data: d1, backgroundColor: PALETTE[0]},
+        {label: t2.team + ' (' + t2.goals + ')', data: d2, backgroundColor: PALETTE[2]},
+      ]},
+      options: { scales: { x:{grid:{color:'#2a2e38'}}, y:{grid:{color:'#2a2e38'}} },
+        plugins:{ legend:{labels:{color:'#e8eaed'}} } }
+    });
+  }
+  matchSel.addEventListener('change', renderMatch);
+  if(matches.length) renderMatch();
+
+  const top15 = [...teams].sort((a,b) => b.composite - a.composite).slice(0, 15);
+  new Chart(document.getElementById('powerBarChart'), {
+    type: 'bar',
+    data: { labels: top15.map(t => t.team), datasets: [
+      {label: 'Indice Power Ranking', data: top15.map(t => t.composite),
+       backgroundColor: top15.map((_,i) => i < 3 ? PALETTE[0] : PALETTE[1])}
+    ]},
+    options: { indexAxis: 'y',
+      scales: { x:{grid:{color:'#2a2e38'}}, y:{grid:{display:false}} },
+      plugins:{ legend:{display:false} } }
+  });
+
+  // --- Gol per ruolo (doughnut) ---
+  const roleLabels = {GK:'Portieri', DF:'Difensori', MF:'Centrocampisti', FW:'Attaccanti'};
+  const roleOrder = ['GK','DF','MF','FW'];
+  const goalsByRole = {GK:0, DF:0, MF:0, FW:0};
+  players.forEach(p => { goalsByRole[p.role] = (goalsByRole[p.role] || 0) + (p.goals || 0); });
+  new Chart(document.getElementById('goalsRoleChart'), {
+    type: 'doughnut',
+    data: { labels: roleOrder.map(r => roleLabels[r]),
+      datasets: [{ data: roleOrder.map(r => goalsByRole[r]), backgroundColor: PALETTE, borderColor: '#171a21', borderWidth: 2 }] },
+    options: { plugins:{ legend:{position:'bottom', labels:{color:'#e8eaed'}} } }
+  });
+
+  // --- Voto medio per ruolo (bar) ---
+  const votoByRole = {};
+  roleOrder.forEach(r => {
+    const list = players.filter(p => p.role === r && typeof p.voto === 'number');
+    votoByRole[r] = list.length ? list.reduce((s,p) => s + p.voto, 0) / list.length : 0;
+  });
+  new Chart(document.getElementById('votoRoleChart'), {
+    type: 'bar',
+    data: { labels: roleOrder.map(r => roleLabels[r]),
+      datasets: [{ label:'Voto medio', data: roleOrder.map(r => +votoByRole[r].toFixed(2)), backgroundColor: PALETTE[2] }] },
+    options: { scales: { y:{ min:5, max:8, grid:{color:'#2a2e38'} }, x:{grid:{display:false}} },
+      plugins:{ legend:{display:false} } }
+  });
+
+  // --- Top 10 marcatori ---
+  const scorers = players.filter(p => p.goals > 0).sort((a,b) => b.goals - a.goals).slice(0, 10);
+  new Chart(document.getElementById('topScorersChart'), {
+    type: 'bar',
+    data: { labels: scorers.map(p => p.player + ' (' + p.team + ')'),
+      datasets: [{ label:'Gol', data: scorers.map(p => p.goals), backgroundColor: PALETTE[3] }] },
+    options: { indexAxis: 'y',
+      scales: { x:{ ticks:{stepSize:1}, grid:{color:'#2a2e38'} }, y:{grid:{display:false}} },
+      plugins:{ legend:{display:false} } }
+  });
+
+  // --- Confronto Confederazioni ---
+  const confeds = [...new Set(teams.map(t => t.confed))].sort();
+  const confedAvg = confeds.map(c => {
+    const list = teams.filter(t => t.confed === c);
+    return list.reduce((s,t) => s + t.composite, 0) / list.length;
+  });
+  new Chart(document.getElementById('confedChart'), {
+    type: 'bar',
+    data: { labels: confeds, datasets: [{ label:'Indice medio', data: confedAvg.map(v => +v.toFixed(2)), backgroundColor: PALETTE }] },
+    options: { scales: { y:{ grid:{color:'#2a2e38'} }, x:{grid:{display:false}} },
+      plugins:{ legend:{display:false} } }
+  });
+})();
+</script>
+
+</main>
+<footer>
+  <div class="container">Magazine generato dal progetto Regista Avanzato — tutti i dati provengono esclusivamente dai PDF PMSR ufficiali FIFA scaricati e dai file di anagrafica/ruolo FBref (statistiche_convocati.md), usati solo per nomi e ruoli.</div>
+</footer>
+</body>
+</html>
