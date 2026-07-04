@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Player Rating Totale — Fase a Gironi — Regista Avanzato Mondiali 2026</title>
+<title>Player Rating Totale — Gironi + Sedicesimi — Regista Avanzato Mondiali 2026</title>
 <link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
@@ -15,7 +15,7 @@
 </header>
 <main class="container">
 <a class="back-link" href="../index.html">&larr; Home</a>
-<h2>Player Rating Totale — Fase a Gironi (Giornate 1-3)</h2>
+<h2>Player Rating Totale — Gironi + Sedicesimi (Giornate 1-3 + R16)</h2>
 <p>Voto medio 1-10 per ogni giocatore sceso in campo nella fase a gironi del Mondiale 2026 (72 partite, Match 1-72, 11-27 giugno 2026), calcolato con la stessa metodologia delle singole giornate (vedi <code>Metodologia_Player_Rating.md</code>) a partire esclusivamente dai dati PMSR ufficiali. Il <strong>voto medio</strong> è la media dei voti ottenuti da ciascun giocatore in tutte le partite valutate finora; le <strong>presenze</strong> sono il numero di partite in cui il giocatore compare nel PMSR con dati statistici. Su 999 giocatori complessivamente censiti nelle tre giornate, 500 hanno giocato tutte e 3 le partite, 272 ne hanno giocate 2 e 227 soltanto 1.</p>
 <p>Le classifiche principali di questa pagina richiedono un <strong>minimo di 2 presenze su 3</strong>, per premiare la continuità di rendimento sull'intera fase a gironi e non una singola prestazione isolata — già valorizzata nelle pagine dedicate a ciascuna giornata: <a href="player-rating-giornata1.html">Giornata 1</a>, <a href="player-rating-giornata2.html">Giornata 2</a>, <a href="player-rating-giornata3.html">Giornata 3</a>.</p>
 
@@ -42,7 +42,7 @@
 <p>Filtra per giornata, ruolo, girone, confederazione, squadra, nome o per ciascuno dei 4 pilastri della metodologia (percentile 0-100 rispetto ai giocatori dello stesso ruolo, calcolato sul campione della giornata di quella presenza). Ogni riga è una singola presenza in una partita: un giocatore che ha giocato 3 partite compare 3 volte. Clicca su un'intestazione di colonna per ordinare.</p>
 
 <div class="controls" id="ratingFilters">
-  <label>Giornata <select id="fGiornata"><option value="">Tutte</option><option value="1">Giornata 1</option><option value="2">Giornata 2</option><option value="3">Giornata 3</option></select></label>
+  <label>Giornata <select id="fGiornata"><option value="">Tutte</option><option value="1">Giornata 1</option><option value="2">Giornata 2</option><option value="3">Giornata 3</option><option value="4">Sedicesimi</option></select></label>
   <label>Ruolo
     <select id="fRole"><option value="">Tutti</option><option value="FW">Attaccante</option><option value="MF">Centrocampista</option><option value="DF">Difensore</option><option value="GK">Portiere</option></select>
   </label>
@@ -110,6 +110,11 @@
     const n = parseInt(String(mid).replace('M',''), 10);
     if(n <= 24) return 1;
     if(n <= 48) return 2;
+    if(n <= 72) return 3;
+    return 4;
+  }
+  // dummy to replace old logic
+  function __dummy(n){ if(n <= 48) return 2;
     return 3;
   }
 
